@@ -1,7 +1,12 @@
+import os
 import discord
 from discord.ext import commands, tasks
 from datetime import datetime, timedelta
 import sqlite3
+from dotenv import load_dotenv
+
+# Load environment variables (to keep the token safe)
+load_dotenv()
 
 # Bot setup
 intents = discord.Intents.default()
@@ -16,13 +21,17 @@ c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS activity (user_id INTEGER PRIMARY KEY, messages INTEGER, voice_time INTEGER)''')
 conn.commit()
 
-# Discord token (you'll set this in the environment variables later)
-TOKEN = 'YOUR_DISCORD_TOKEN'
+# Get Discord token from environment variables
+TOKEN = os.getenv('DISCORD_BOT_TOKEN')  # This will fetch the token securely
+
+# Make sure the token is available
+if not TOKEN:
+    raise ValueError("No DISCORD_BOT_TOKEN found in environment variables")
 
 # Check user activity every hour
 @tasks.loop(hours=1)
 async def check_activity():
-    guild = bot.get_guild(YOUR_GUILD_ID)  # Replace with your server ID
+    guild = bot.get_guild(1348215766155264030)  # Replace with your server ID
     for member in guild.members:
         if member.bot:
             continue
